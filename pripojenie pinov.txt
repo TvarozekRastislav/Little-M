@@ -1,0 +1,24 @@
+servo - 9
+
+h-bridge:
+ENA - 3
+ENB - 6
+IN1 - 10
+IN2 - 11
+IN3 - 12
+IN4 - 13 
+
+servo: 9
+
+sensor:
+trig - 0 
+echo - 1
+
+track-middle - 8
+track-left - 7
+track-right - 5
+
+
+putty for writing conections strenght
+when want to at cr+lt 115200 and gnd + rst for start 
+or write AT+RST
