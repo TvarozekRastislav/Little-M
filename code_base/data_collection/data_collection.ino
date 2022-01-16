@@ -10,7 +10,7 @@ void loop() {
   int numNetworks = WiFi.scanNetworks();
   Serial.println();
   for(int x = 0; x < 3 ; x++){
-    for(int y = 0; y < 10; y++){
+    for(int y = 0; y < 15; y++){
       numNetworks = WiFi.scanNetworks();
       Serial.print(x+1);
       for(int i = 0; i<numNetworks;i++){

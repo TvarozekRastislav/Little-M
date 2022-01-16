@@ -1,4 +1,8 @@
 #include <SoftwareSerial.h>
+#include "model.h"
+
+Eloquent::ML::Port::SVM SVM_classifier;
+
 #define rxPin 4
 #define txPin 2
 SoftwareSerial SerialEsp =  SoftwareSerial(rxPin, txPin);
@@ -26,6 +30,9 @@ int speed = 80;
 int first_signal = 0;
 int second_signal = 0; 
 int third_signal = 0;
+
+short room = 0;
+short prev_predict = 0;
 
 void motor_control_IO_config()
 {
@@ -108,29 +115,47 @@ void sensor_IO_config()
     pinMode(sensor_middle, INPUT);
 }
 
-void getSignal(){
-  char ch;
-  int value =0;
-  int sign = 1;
-  if(SerialEsp.available()){
-      ch = SerialEsp.read();
-      Serial.println(ch);
-      if(ch >= '0' && ch <= '9'){ // is this an ascii digit between 0 and 9?
-        value = (value * 10) + (ch - '0'); // yes, accumulate the value
+void read_room(){
+  SerialEsp.write('s');
+  delay(200);
+  Serial.println(SerialEsp.available());
+  if(SerialEsp.available()>=3){
+    Serial.println("prisli 3 bajty");
+    first_signal = SerialEsp.read()* (-1);
+    second_signal = SerialEsp.read()* (-1);
+    third_signal = SerialEsp.read() * (-1);
+    Serial.println(first_signal);
+    Serial.println(second_signal);
+    Serial.println(third_signal);
+    }
+  else{
+    Serial.println("prislo menej bajtov!");
+    while(Serial.available() > 0) {
+      char t = Serial.read();
       }
-      else if( ch == '-'){
-        sign = -1;  
-      }
-      else{
-        value = value * sign ;  // set value to the accumulated value
-        Serial.println(value);
-        value = 0; // reset value to 0 ready for the next sequence of digits
-        sign = 1;
-        return; 
-      }
-   }
+    first_signal = 0;
+    second_signal = 0;
+    third_signal = 0;
+    }
 }
 
+void get_room(){
+  if(first_signal == 0|| second_signal ==0 || third_signal = 0){
+    return;
+    }
+  float features[] = {first_signal, second_signal, third_signal};
+  String output_str = SVM_classifier.predictLabel(features);
+  int output = output_str.toInt();
+  Serial.println("output z algoritmu");
+  Serial.println(output);
+  Serial.println(prev_predict);
+  if(prev_predict == output){
+    room = output;
+    }
+  Serial.println("room");
+  Serial.println(room);
+  prev_predict = output;
+  }
 void setup()
 {
     pinMode(rxPin, INPUT);
@@ -238,23 +263,9 @@ void loop()
         }
         if (mode_maunal == 0)
         {
-          
-          int dummy;
-          Serial.println("start automatic mode");
-          Serial.println(SerialEsp.available());
-          while(SerialEsp.available()>12)  {  
-              dummy = SerialEsp.read();  
-          }
-          delay(2000);
-          Serial.println(SerialEsp.available());
-
-          if(SerialEsp.available()>= 6){
-            Serial.println("už idem na to");
-            for(int i = 0; i< 3 ;i++){
-               getSignal();
-              }
-            }
+            read_room();
             tracking_scan();
+            get_room();
             if (state_middle == HIGH)
             {
                 if (state_left == LOW & state_right == HIGH)
