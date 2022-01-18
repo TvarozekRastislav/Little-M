@@ -116,14 +116,18 @@ void sensor_IO_config()
 }
 
 void read_room(){
+  while(Serial.available() > 0) {
+      char t = Serial.read();
+      }
   SerialEsp.write('s');
-  delay(200);
-  Serial.println(SerialEsp.available());
-  if(SerialEsp.available()>=3){
+  delay(100);
+  if(SerialEsp.available()){
     Serial.println("prisli 3 bajty");
+    
     first_signal = SerialEsp.read()* (-1);
     second_signal = SerialEsp.read()* (-1);
     third_signal = SerialEsp.read() * (-1);
+    
     Serial.println(first_signal);
     Serial.println(second_signal);
     Serial.println(third_signal);
@@ -140,22 +144,33 @@ void read_room(){
 }
 
 void get_room(){
-  if(first_signal == 0|| second_signal ==0 || third_signal = 0){
+  if(first_signal == 0 || second_signal == 0 || third_signal == 0){
+    Serial.println("prislo malo signalov");
+    return;
+    }
+  if(first_signal == 1 || second_signal == 1 || third_signal == 1){
+    Serial.println("prislo poskodeny signal");
     return;
     }
   float features[] = {first_signal, second_signal, third_signal};
   String output_str = SVM_classifier.predictLabel(features);
   int output = output_str.toInt();
-  Serial.println("output z algoritmu");
+  Serial.println("------------------");
+  Serial.println("konkretna miestnost:");
   Serial.println(output);
+  Serial.println("predchadazaujca miestnost:");
   Serial.println(prev_predict);
+  
   if(prev_predict == output){
     room = output;
     }
-  Serial.println("room");
+    
+  Serial.println("daná miestnost:");
   Serial.println(room);
+  Serial.println("------------------");
   prev_predict = output;
   }
+  
 void setup()
 {
     pinMode(rxPin, INPUT);

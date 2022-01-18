@@ -35,10 +35,13 @@ void loop()
 
   Serial.println(num1);
   Serial.println(num2);
-  
   Serial.println(num3);
-  float features[] = {num1, num2, num3};
-  String output_str = SVM_classifier.predictLabel(features);
-  Serial.println(output_str);
-  delay(5000);
+  if(num1 != 0|| num2 != 0 || num3 != 0){
+    float features[] = {num1, num2, num3};
+    String output_str = SVM_classifier.predictLabel(features);
+    Serial.println("-----------rooom-----");
+    Serial.println(output_str);
+    Serial.println("-----------rooom-----");
+    delay(2000);
+    }
 }

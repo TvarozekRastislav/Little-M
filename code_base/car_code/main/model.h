@@ -1,5 +1,5 @@
 #pragma once
-#include <cstdarg>
+#include <stdarg.h>
 namespace Eloquent {
     namespace ML {
         namespace Port {
