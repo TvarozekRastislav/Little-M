@@ -33,4 +33,8 @@ Pri programovaní musíme dbať na správne nastavenie výšky boaudov.\
 **kód**:
 - [code_base/data_collection.ino](https://github.com/TvarozekRastislav/Little-M./blob/main/code_base/data_collection/data_collection.ino)
 
+**fotka**:
+
+<img src="hardware_pics/signal_collector.png" width="200" height="220"/>
+
 ### Vozidlo
