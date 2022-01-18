@@ -1,0 +1,5 @@
+Zariadenie na zber dát:
+
+Adaptér pre ESP-01
+ESP8266 ESP-01
+tlačidlo
