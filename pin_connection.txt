@@ -1,6 +1,6 @@
-servo - 9
+Servo - 9
 
-h-bridge:
+H-bridge:
 ENA - 3
 ENB - 6
 IN1 - 10
@@ -8,9 +8,7 @@ IN2 - 11
 IN3 - 12
 IN4 - 13 
 
-servo: 9
-
-sensor:
+Ultra Sensor:
 trig - 0 
 echo - 1
 
@@ -18,7 +16,8 @@ track-middle - 8
 track-left - 7
 track-right - 5
 
+esp8266_module_rx - 2
+esp8266_module_tx - 4
 
-putty for writing conections strenght
-when want to at cr+lt 115200 and gnd + rst for start 
-or write AT+RST
+bluetooth_rx - tx 
+bluetooth_tx - rx
