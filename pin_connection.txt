@@ -22,7 +22,7 @@ esp8266_module_tx - 4
 bluetooth_rx - tx 
 bluetooth_tx - rx
 
-display: 
+Display: 
 Vss - GND
 Vdd - 5V
 Vo - GND

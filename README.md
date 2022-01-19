@@ -69,10 +69,11 @@ Vozidlo využíva Arduino Uno a Arduino sensor shield kvoli veľkému množstvu 
 - [schemas/car_connected_pdf.png](https://github.com/TvarozekRastislav/Little-M./blob/main/schemas/car_connected_pdf.pdf)
 
 **kód**
-- [code_base/car_code/main.ino](https://github.com/TvarozekRastislav/Little-M./blob/main/code_base/data_clear_jupyter.ipynb)
+- [code_base/car_code/main.ino](https://github.com/TvarozekRastislav/Little-M./blob/main/code_base/car_code/main/main.ino)
     - v rovnakom priečinku sa musí nachádzať aj model.h
     - tento kód je ptrebné nahrať na arduino
 - [code_base/sending_via_rxtx](https://github.com/TvarozekRastislav/Little-M./blob/main/code_base/auto_wifi_signal_sender/sending_via_rxtx/sending_via_rxtx.ino)
     - tento kód je potrebné nahrať na ESp-01
+
 **fotka**:
 - [hardware_pics/little_m_back.png](https://github.com/TvarozekRastislav/Little-M./blob/main/hardware_pics/little_m_back.png)
