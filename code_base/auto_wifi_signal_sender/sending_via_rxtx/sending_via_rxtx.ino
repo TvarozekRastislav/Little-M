@@ -1,7 +1,14 @@
 #include <ESP8266WiFi.h>
+
+//------------set-up---------------
+char wifi_ap_1[] = "rododendron";
+char wifi_ap_2[] = "TP-LINK_9FE2A0";
+char wifi_ap_3[] = "Lidcombe";
+//---------------------------------
+
 int numNetworks;
-void setup()
-{
+
+void setup(){
     Serial.begin(115200);
 }
 
@@ -10,13 +17,13 @@ void loop(){
     if(Serial.read() == 's'){
       numNetworks = WiFi.scanNetworks();
        for (int i = 0; i < numNetworks; i++){
-        if (WiFi.SSID(i) == "rododendron"){   
+        if (WiFi.SSID(i) == wifi_ap_1){   
           Serial.write(WiFi.RSSI(i)*(-1)); 
         }
-        if (WiFi.SSID(i) == "TP-LINK_9FE2A0"){
+        if (WiFi.SSID(i) == wifi_ap_2){
           Serial.write(WiFi.RSSI(i)*(-1));
         }
-        if (WiFi.SSID(i) == "Lidcombe"){
+        if (WiFi.SSID(i) == wifi_ap_3){
           Serial.write(WiFi.RSSI(i)*(-1));
         }
       }

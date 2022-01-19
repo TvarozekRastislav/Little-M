@@ -48,7 +48,7 @@ Modelovú časť možno vykonať dvoma spôsobmi a to spustením dvoch jupyter n
 Pri jupyternotebooku môžeme vidieť aj extra grafy týkajúce sa dát.
 
 **schéma**:
-- [schemas/software_schema.png](https://github.com/TvarozekRastislav/Little-M./blob/main/schemas/zber_dat_png.png)
+- [schemas/software_schema.png](https://github.com/TvarozekRastislav/Little-M./blob/main/schemas/software_schema.PNG)
 
 **kód**
 - [code_base/data_clear_jupyter.ipynb](https://github.com/TvarozekRastislav/Little-M./blob/main/code_base/data_clear_jupyter.ipynb)
@@ -60,3 +60,19 @@ Pri jupyternotebooku môžeme vidieť aj extra grafy týkajúce sa dát.
 
 ---
 ### **Vozidlo**
+Vozidlo využíva Arduino Uno a Arduino sensor shield kvoli veľkému množstvu GND a VCC pinov. Vozidlo je poháňané 4 motormi ktoré sú ovladané H bridge modulov, ktorý umožňuje nastavať rýchlosť vozidla ako aj smer jazdy.\
+ Arduino je napájané dvomi 4.5V batériami.
+ Obsahuje ultrazvukový senzor, bluetooth prijímač, ESP-01, display ktorý zobrazuje aktuálnu miestnosť v ktorej sa vozidlo nachádza, 3 senzori na sledovanie čiary na zemi.\
+ Prvý kód je potrebné nahrať do Arduina druhý na ESP-01, potom je už jednoducho možné vozidlo ovládať cez telefón s bluetooth pripojením, kde sa dá nastavoať mód jazdy, a to bude sledovanie čiary alebo diaľkové ovládanie.
+
+ **schéma**:
+- [schemas/car_connected_pdf.png](https://github.com/TvarozekRastislav/Little-M./blob/main/schemas/car_connected_pdf.pdf)
+
+**kód**
+- [code_base/car_code/main.ino](https://github.com/TvarozekRastislav/Little-M./blob/main/code_base/data_clear_jupyter.ipynb)
+    - v rovnakom priečinku sa musí nachádzať aj model.h
+    - tento kód je ptrebné nahrať na arduino
+- [code_base/sending_via_rxtx](https://github.com/TvarozekRastislav/Little-M./blob/main/code_base/auto_wifi_signal_sender/sending_via_rxtx/sending_via_rxtx.ino)
+    - tento kód je potrebné nahrať na ESp-01
+**fotka**:
+- [hardware_pics/little_m_back.png](https://github.com/TvarozekRastislav/Little-M./blob/main/hardware_pics/little_m_back.png)
