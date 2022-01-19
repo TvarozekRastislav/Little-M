@@ -1,6 +1,9 @@
 {
     "in_file": "data_in.txt",
     "out_file": "data_out.csv",
-    "separator": "|"
-  
+    "separator": "|",
+    "random_state" : 31,
+    "test_split" : 0.20,
+    "kernel" : "linear",
+    "c" : 1
 }
