@@ -2,7 +2,7 @@
 <div style="text-align:center">
     <img src="presentation/little_m_logo_no_bg.png"/>
 
-Bakalársky projekt študenta na FEI STU Bratislava.<br> Jedná sa o návrh malého autonómneho robotického vozdila s orientáciou v interiery.
+Bakalársky projekt študenta na FEI STU Bratislava.<br> Jedná sa o návrh malého autonómneho robotického vozdila s orientáciou v interieri.
 </div>
 
 ---

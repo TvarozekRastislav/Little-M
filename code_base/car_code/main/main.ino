@@ -26,7 +26,7 @@ const int EN_A = 3;
 const int EN_B = 6;
 int car_mode = 0;
 
-int mode_maunal = 0;
+int mode_maunal = 1;
 char Incoming_value = 0;
 int speed = 80;
 
@@ -192,7 +192,7 @@ void setup(){
   pinMode(A5, OUTPUT);
     
   lcd.begin(8, 2);
-  lcd.print("hello");
+  lcd.print("room:");
   motor_control_IO_config();
   sensor_IO_config();
 }
@@ -204,7 +204,8 @@ void tracking_scan(){
 }
 
 void loop(){
-  delay(500);
+  
+  
   if (Serial.available() > 0){
     Incoming_value = Serial.read(); //Read the incoming data and store it into variable Incoming_value
     Serial.print(Incoming_value);   //Print Value of Incoming_value in Serial monitor
@@ -216,7 +217,7 @@ void loop(){
     else if (Incoming_value == 'C'){
       mode_maunal = 0;
     }
-  }
+  
   if (mode_maunal == 1){
     if (Incoming_value == '1'){
       forward();
@@ -275,10 +276,16 @@ void loop(){
         stop();
       }
     }
+    read_room();
+    tracking_scan();
+    get_room(); 
+  }
     if (mode_maunal == 0){ 
+      
       read_room();
       tracking_scan();
       get_room(); 
+      
       if (state_middle == HIGH){
         if (state_left == LOW & state_right == HIGH){
           right();
