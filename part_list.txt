@@ -17,3 +17,4 @@ IIC Senzorový shield V5.0
 bluetooth modul HC-05
 batériový box
 esp-01 adaptér 5V5
+potenciometer

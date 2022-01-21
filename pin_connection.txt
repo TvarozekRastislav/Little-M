@@ -25,7 +25,7 @@ bluetooth_tx - rx
 Display: 
 Vss - GND
 Vdd - 5V
-Vo - GND
+Vo - potenciometer
 Rs - A0
 Rw - GND
 E - A1
