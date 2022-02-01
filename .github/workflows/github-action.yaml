@@ -24,5 +24,5 @@ jobs:
       - name: run script for model
         working-directory: ./code_base/create_model_automatic
         run: |
-          python ./code_base/create_model_automatic/generate_model_from_data_file.py
+          python generate_model_from_data_file.py
       
