@@ -81,7 +81,7 @@ def main():
     kernel = config["kernel"]
     c = config["c"]
     print(f"{datetime.now()} --- loading {in_file} as dataframe ")
-    df = pd.read_csv(in_file, sep = separator, header = None)
+    df = pd.read_csv('data_in.txt', sep=separator, header=None,skiprows=2)
 
     print(f"{datetime.now()} --- clearing data \n")
     df = df_clear(df)

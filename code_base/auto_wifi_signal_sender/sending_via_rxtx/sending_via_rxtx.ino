@@ -20,10 +20,10 @@ void loop(){
         if (WiFi.SSID(i) == wifi_ap_1){   
           Serial.write(WiFi.RSSI(i)*(-1)); 
         }
-        if (WiFi.SSID(i) == wifi_ap_2){
+        else if (WiFi.SSID(i) == wifi_ap_2){
           Serial.write(WiFi.RSSI(i)*(-1));
         }
-        if (WiFi.SSID(i) == wifi_ap_3){
+        else if (WiFi.SSID(i) == wifi_ap_3){
           Serial.write(WiFi.RSSI(i)*(-1));
         }
       }

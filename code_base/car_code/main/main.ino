@@ -14,6 +14,9 @@ SoftwareSerial SerialEsp =  SoftwareSerial(rxPin, txPin);
 
 LiquidCrystal lcd(14, 15, 16, 17, 18, 19);  
 
+unsigned long esp_read_interval = 1000;
+unsigned long time_for_action = 0;
+
 unsigned char state_left;
 unsigned char state_middle;
 unsigned char state_right;
@@ -26,9 +29,9 @@ const int EN_A = 3;
 const int EN_B = 6;
 int car_mode = 0;
 
-int mode_maunal = 1;
+int mode_maunal = 0;
 char Incoming_value = 0;
-int speed = 80;
+int speed = 60;
 
 int first_signal = 0;
 int second_signal = 0; 
@@ -36,6 +39,9 @@ int third_signal = 0;
 
 short room = 0;
 short prev_predict = 0;
+
+int s_sent = 0;
+short counter = 0; 
 
 void motor_control_IO_config(){
   pinMode(IN_1, OUTPUT);
@@ -111,35 +117,47 @@ void sensor_IO_config(){
 }
 
 void read_room(){
-  while(Serial.available() > 0) {
-      char t = Serial.read();
+  
+  if(s_sent == 0){
+    SerialEsp.write('s');
+    s_sent = 1;
   }
-  
-  SerialEsp.write('s');
-  delay(100);
-  
-  if(SerialEsp.available()){
-    Serial.println("prisli 3 bajty");
-    
-    first_signal = SerialEsp.read()* (-1);
-    second_signal = SerialEsp.read()* (-1);
-    third_signal = SerialEsp.read() * (-1);
-    
-    Serial.println(first_signal);
-    Serial.println(second_signal);
-    Serial.println(third_signal);
-    }
-  else{
-    Serial.println("prislo menej bajtov!");
-    
-    while(Serial.available() > 0) {
-      char t = Serial.read();
+
+  if(millis() > time_for_action){
+      time_for_action = millis() + esp_read_interval;
+      Serial.println(SerialEsp.available());
+      if(SerialEsp.available()==3){
+        s_sent = 0;
+        Serial.println("prisli bajty");
+        Serial.println(SerialEsp.available());
+        first_signal = SerialEsp.read()* (-1);
+        second_signal = SerialEsp.read()* (-1);
+        third_signal = SerialEsp.read() * (-1);
+        
+        Serial.println(first_signal);
+        Serial.println(second_signal);
+        Serial.println(third_signal);
+
+        counter = 0;
+        get_room();
       }
-      
-    first_signal = 0;
-    second_signal = 0;
-    third_signal = 0;
-    }
+      else{
+        Serial.println("prislo menej bajtov!");
+        counter++;
+        while(SerialEsp.available() > 0){
+         char t = SerialEsp.read();
+      }
+      if(counter == 5 ){
+        SerialEsp.write('s');
+        counter= 0; 
+        Serial.write("poslal som s");
+      }
+      first_signal = 0;
+      second_signal = 0;
+      third_signal = 0;
+      return;
+      }
+   }
 }
 
 void get_room(){
@@ -174,7 +192,6 @@ void get_room(){
   Serial.println(room);
   Serial.println("------------------");
   prev_predict = output;
-  
 }
   
 void setup(){ 
@@ -193,6 +210,7 @@ void setup(){
     
   lcd.begin(8, 2);
   lcd.print("room:");
+  
   motor_control_IO_config();
   sensor_IO_config();
 }
@@ -205,10 +223,9 @@ void tracking_scan(){
 
 void loop(){
   
-  
   if (Serial.available() > 0){
-    Incoming_value = Serial.read(); //Read the incoming data and store it into variable Incoming_value
-    Serial.print(Incoming_value);   //Print Value of Incoming_value in Serial monitor
+    Incoming_value = Serial.read();
+    Serial.print(Incoming_value);  
     Serial.print("\n");
     
     if (Incoming_value == 'c'){
@@ -277,14 +294,10 @@ void loop(){
       }
     }
     read_room();
-    tracking_scan();
-    get_room(); 
   }
-    if (mode_maunal == 0){ 
-      
-      read_room();
+    if (mode_maunal == 0){
+      read_room(); 
       tracking_scan();
-      get_room(); 
       
       if (state_middle == HIGH){
         if (state_left == LOW & state_right == HIGH){
@@ -310,5 +323,5 @@ void loop(){
           stop();
          }
       }
-   }       
+   }  
 }

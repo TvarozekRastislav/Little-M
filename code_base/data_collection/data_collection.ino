@@ -2,7 +2,7 @@
 
 //------------set-up---------------
 short num_of_rooms = 3;
-short num_of_records = 15;
+short num_of_records = 30;
 char wifi_ap_1[] = "rododendron";
 char wifi_ap_2[] = "TP-LINK_9FE2A0";
 char wifi_ap_3[] = "Lidcombe";
@@ -42,8 +42,9 @@ void loop() {
         }
       }
       Serial.println();
-      delay(4000);
+      delay(3000);
     }
+    Serial.println("change room");
     delay(7000);
   }
   Serial.println("exit");
