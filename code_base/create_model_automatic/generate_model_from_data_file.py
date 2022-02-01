@@ -22,7 +22,6 @@ def export_to_c(clf):
 
 #Let's print the size of the .h file
 import os
-model_h_size = os.path.getsize("model.h")
 def create_model(df, random_state, test_split, kernel, c):
     print(f"{datetime.now()} --- model training start")
 
