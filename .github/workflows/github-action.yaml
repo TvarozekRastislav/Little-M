@@ -22,6 +22,7 @@ jobs:
           pip install flake8 pytest
           if [ -f ./.github/workflows/requirements.txt ]; then pip install -r ./.github/workflows/requirements.txt; fi;
       - name: run script for model
+        working-directory: ./code_base/create_model_automatic
         run: |
           python ./code_base/create_model_automatic/generate_model_from_data_file.py
       
