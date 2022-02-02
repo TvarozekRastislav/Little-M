@@ -44,13 +44,15 @@ Pri programovaní musíme dbať na správne nastavenie výšky boaudov.\
 ### **Modelová časť**
 
 Modelová časť má za úlohu z loggovaného výstupu z predchádzajúcej časti vygenrovať "clean" csv súbor a pomocou tohoto súboru natrénovať model ktorý využíva SVM klasifikátor a následne tento model pomocou open source knižnice micromlgen prekonvertovať na súbor v jazyku C ktorý je možné využiť v arduine.\
-Modelovú časť možno vykonať dvoma spôsobmi a to spustením dvoch jupyter notebookov alebo v budúcnosti nastavením config súboru a commitnutím nových dát sa automatický spustí pipeline ktorá toto vykoná.
+Modelovú časť možno vykonať dvoma spôsobmi a to spustením dvoch jupyter notebookov alebo nastavením configu a lokálneho spustenia scriptu ktorý sa nachádza nižšie alebo pushnutím nových vstupných dát.txt do main branche sa spustá GitHub action  ktorá model vygeneruje a pushne na GitHub.
 Pri jupyternotebooku môžeme vidieť aj extra grafy týkajúce sa dát.
 
 **schéma**:
 - [schemas/software_schema.png](https://github.com/TvarozekRastislav/Little-M./blob/main/schemas/software_schema.PNG)
 
 **kód**
+
+***manuálne***:
 - [code_base/data_clear_jupyter.ipynb](https://github.com/TvarozekRastislav/Little-M./blob/main/code_base/data_clear_jupyter.ipynb)
     - v rovnakom priečinku sa musí nachádzať vstupný súbor s dátami s formátom z predchádzajúcej časti
     - vystupom je csv súbor 
@@ -58,6 +60,11 @@ Pri jupyternotebooku môžeme vidieť aj extra grafy týkajúce sa dát.
     - v rovnakom priečinku sa musí nachádzať vstupný súbor csv súbor s formátovanými dátami z predhádzajúceho bodu
     - výstupom je model.h súbor ktorý obsahuje natrénovaný model
 
+***pomocou configu a scriptu***:
+- [code_base/create_model_automatic/config.json](https://github.com/TvarozekRastislav/Little-M./blob/main/code_base/create_model_automatic/config.json)
+    - config je potrebné zmeniť na požadované parametre
+- [code_base/create_model_automatic/generate_model_from_data_file.py](https://github.com/TvarozekRastislav/Little-M./blob/main/code_base/create_model_automatic/generate_model_from_data_file.py)
+    - na spustenie scriptu sú potrebné moduly ktoré sa nachádzajú v - [.github/workflows/requirements.txt](.github/workflows/requirements.txt)
 ---
 ### **Vozidlo**
 Vozidlo využíva Arduino Uno a Arduino sensor shield kvoli veľkému množstvu GND a VCC pinov. Vozidlo je poháňané 4 motormi ktoré sú ovladané H bridge modulov, ktorý umožňuje nastavať rýchlosť vozidla ako aj smer jazdy.\
