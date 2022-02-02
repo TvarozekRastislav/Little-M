@@ -3,12 +3,17 @@ import pandas as pd
 import numpy as np
 import json
 import matplotlib.pyplot as plt
+import logging
 from sklearn.metrics import f1_score, accuracy_score, f1_score, precision_score, recall_score, classification_report, confusion_matrix, plot_confusion_matrix
 from micromlgen import port
 from sklearn import svm, datasets
 from sklearn.model_selection import train_test_split
-
 from datetime import datetime
+
+level = logging.DEBUG
+fmt = '[%(levelname)s %(asctime)s - %(message)s]'
+logging.basicConfig(level=level, format=fmt)
+
 def export_to_c(clf):
     LABELS = ['1','2','3'] #our existing labels
     classMap = {} #create an empty dict
