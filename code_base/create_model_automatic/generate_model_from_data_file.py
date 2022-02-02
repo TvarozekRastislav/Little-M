@@ -47,10 +47,10 @@ def create_model(df, random_state, test_split, kernel, c):
     return clf
 
 def df_clear(df):
-    df.columns = ["room","1","n","2","n","3","n"]
-    df.pop("n")
+    df = df.drop([2,4,6], axis = 1)
+    df.columns = ["room","1","2","3"]
     df = df.dropna(axis = 0)
-    df = df.astype({"3": int})
+    df = df.astype({"3": int, "2" : int , "1": int})
 
     return df
 
@@ -80,7 +80,7 @@ def main():
     kernel = config["kernel"]
     c = config["c"]
     print(f"{datetime.now()} --- loading {in_file} as dataframe ")
-    df = pd.read_csv('data_in.txt', sep=separator, header=None,skiprows=2)
+    df = pd.read_csv('data_in.txt', sep = separator, header = None)
 
     print(f"{datetime.now()} --- clearing data \n")
     df = df_clear(df)

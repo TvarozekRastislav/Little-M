@@ -29,7 +29,7 @@ jobs:
         run: |
           git config --local user.name "TvarozekRastislav"
           git add .
-          git commit -m "Updating the repository GitHub html pages in the docs folder"
+          git commit -m "feat: Updating the mode.h file"
       - name: Push changes # push the output folder to your repo
         uses: ad-m/github-push-action@master
         with:
