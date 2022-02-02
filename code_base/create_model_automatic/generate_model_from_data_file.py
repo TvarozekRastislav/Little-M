@@ -15,20 +15,20 @@ fmt = '[%(levelname)s %(asctime)s - %(message)s]'
 logging.basicConfig(level=level, format=fmt)
 
 def export_to_c(clf):
-    LABELS = ['1','2','3'] #our existing labels
-    classMap = {} #create an empty dict
-    for i, label in zip(range(3),LABELS): #interate over the range and the labels at the same time 
-        classMap[i]=label #fill our dict
-    c_code = port(clf,classmap=classMap) #convert our model
+    LABELS = ['1','2','3'] 
+    classMap = {} 
+    for i, label in zip(range(3),LABELS): 
+        classMap[i]=label 
+    c_code = port(clf,classmap=classMap)
 
     with open("model.h", "w") as f:
         f.write(c_code)
         f.close()
 
-#Let's print the size of the .h file
 import os
 def create_model(df, random_state, test_split, kernel, c):
-    print(f"{datetime.now()} --- model training start")
+    logging.info("model training start")
+
 
     X = df[df.columns.difference(["room"])]
     y = df["room"]
@@ -60,20 +60,21 @@ def df_clear(df):
     return df
 
 def json_load(file):
-    print(f"{datetime.now()} --- opening file - {file} ")
+    logging.info("opening file")
+
     try:
         with open(file) as f:
             opened_file = json.load(f)
     except Exception as e:
-        print(f"{datetime.now()} --- loading - {file} failed ")  
-        print(f"{datetime.now()} --- error: {e} \n")    
+        logging.error("loading - %s failed ", file)
+        logging.error("loading - error: %s", e)
 
-    print(f"{datetime.now()} --- file opened succesfully")
+    logging.info("file opened succesfully")
     return opened_file
 
 
 def main():
-    print(f"{datetime.now()} --- loading config ")
+    logging.info("loading config")
     config = json_load("config.json")
 
     in_file = config["in_file"]
@@ -84,32 +85,36 @@ def main():
     test_split = config["test_split"]
     kernel = config["kernel"]
     c = config["c"]
-    print(f"{datetime.now()} --- loading {in_file} as dataframe ")
+
+    logging.info("Config je nastavený:\nin_file: %s\noutfile: %s\nseparator: %s\nrandom_state: %s\ntest_split: %s\nkernel: %s\nc: %s",
+     in_file, out_file ,separator, random_state, test_split, kernel, c)
+
+
+    logging.info("loading %s as dataframe", in_file)
     df = pd.read_csv('data_in.txt', sep = separator, header = None)
 
-    print(f"{datetime.now()} --- clearing data \n")
+    logging.info("loading %s clearing data", in_file)
     df = df_clear(df)
 
-    print(f"{datetime.now()} --- num of values: \n{df.room.value_counts()} ")
-    print(f"{datetime.now()} --- shape of df: {df.shape} ")
+    logging.info("num of values: \n%s", df.room.value_counts())
+    logging.info("shape of df: %s ", df.shape)
     
-    print(f"{datetime.now()} --- Saving dataframe as {out_file}")
+    logging.info("Saving dataframe as %s", out_file)
     df.to_csv(out_file)
 
     try:
         model = create_model(df, random_state, test_split, kernel, c)
     except Exception as e:
-        print(f"{datetime.now()} --- vytváranie modelu zlyhalo")  
-        print(f"{datetime.now()} --- error: {e} \n")
+        logging.error("vytváranie modelu zlyhalo")
+        logging.error("error: %s", e)
 
     try: 
         export_to_c(model)
     except Exception as e: 
-        print(f"{datetime.now()} --- exportovanie modelu zlyhalo")  
-        print(f"{datetime.now()} --- error: {e} \n")
+        logging.error("exportovanie modelu zlyhalo")
+        logging.error("error: %s", e)
         exit()
-
-    print(f"{datetime.now()} --- model bol úspešne exportovaný")  
+    logging.info("model bol úspešne exportovaný")
 
 if __name__ == "__main__":
     main()
