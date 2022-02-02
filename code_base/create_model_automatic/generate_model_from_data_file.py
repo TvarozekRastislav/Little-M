@@ -110,6 +110,13 @@ def main():
 
     try: 
         export_to_c(model)
+        with open("model.h", "r") as f:
+            list_of_lines = f.readlines()
+            list_of_lines[1] = "#include <stdarg.h>\n"
+    
+        with open("model.h", "w") as f:
+            f.writelines(list_of_lines)
+    
     except Exception as e: 
         logging.error("exportovanie modelu zlyhalo")
         logging.error("error: %s", e)
