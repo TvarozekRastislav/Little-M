@@ -95,7 +95,7 @@ def main():
         model = create_model(df, random_state, test_split, kernel, c)
     except Exception as e:
         print(f"{datetime.now()} --- vytváranie modelu zlyhalo")  
-        print(f"{datetime.now()} --- error: {e} \n")    
+        print(f"{datetime.now()} --- error: {e} \n")
 
     try: 
         export_to_c(model)
@@ -105,5 +105,6 @@ def main():
         exit()
 
     print(f"{datetime.now()} --- model bol úspešne exportovaný")  
+
 if __name__ == "__main__":
     main()
