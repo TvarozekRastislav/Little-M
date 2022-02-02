@@ -1,7 +1,14 @@
 name: github-action.yaml
 
-on: [push]
-
+on:
+  push:
+    types:
+      - opened 
+    branches: 
+      - 'main'
+    paths:
+      - '**.txt'
+      
 jobs:
   build:
 
