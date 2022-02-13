@@ -7,25 +7,23 @@
 
 Eloquent::ML::Port::SVM SVM_classifier;
 
-#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
+#define OLED_RESET -1 
 #define SCREEN_ADDRESS 0x3C
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_WIDTH 128 
 #define SCREEN_HEIGHT 32
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #define rxPinEsp 4
 #define txPinESp 2
 
-#define echoUltraSoundPinSensor 1
-#define trigUltraSoundPinSensor 0
+#define trigPin A1
+#define echoPin A0
 
 #define sensor_left 7
 #define sensor_middle 8
 #define sensor_right 5
 
 SoftwareSerial SerialEsp = SoftwareSerial(rxPinEsp, txPinESp);
-
-
 
 unsigned long esp_read_interval = 1000;
 unsigned long time_for_action = 0;
@@ -229,17 +227,12 @@ void setup(){
   
   pinMode(rxPinEsp, INPUT);
   pinMode(txPinESp, OUTPUT);
-
-
+  
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+  
   Serial.begin(9600); 
   SerialEsp.begin(115200);
-    
-  pinMode(A0, OUTPUT);
-  pinMode(A1, OUTPUT);
-  pinMode(A2, OUTPUT);
-  pinMode(A3, OUTPUT);
-  pinMode(A4, OUTPUT);
-  pinMode(A5, OUTPUT);
     
   motor_control_IO_config();
   sensor_IO_config();
@@ -354,16 +347,23 @@ void loop(){
          }
       }
    }
-   pinMode(trigUltraSoundPinSensor, OUTPUT);
-   pinMode(echoUltraSoundPinSensor, INPUT);
-   digitalWrite(trigUltraSoundPinSensor, LOW);
-   delayMicroseconds(5);
-   digitalWrite(trigUltraSoundPinSensor, HIGH);
-   delayMicroseconds(10);
-   digitalWrite(trigUltraSoundPinSensor, LOW);
-   duration = pulseIn(echoUltraSoundPinSensor, HIGH);
-   distance = (duration/2)/29.1;
-   Serial.print("Distance: ");
-   Serial.print(distance);
-   Serial.println(" cm");
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+  // Calculating the distance
+  distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+  // Displays the distance on the Serial Monitor
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  if(distance < 15){
+    stop();
+   }
+  
 }

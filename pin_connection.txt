@@ -9,8 +9,8 @@ IN3 - 12
 IN4 - 13 
 
 Ultra Sensor:
-trig - 0 
-echo - 1
+trig - A1 
+echo - A0
 
 track-middle - 8
 track-left - 7
