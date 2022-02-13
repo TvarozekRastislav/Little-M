@@ -1,18 +1,31 @@
+#include <Adafruit_SSD1306.h>
+
 #include <SoftwareSerial.h>
-#include <LiquidCrystal.h>
+#include <Wire.h>
+
 #include "model.h"
 
 Eloquent::ML::Port::SVM SVM_classifier;
 
-#define rxPin 4
-#define txPin 2
+#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
+#define SCREEN_ADDRESS 0x3C
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 32
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+#define rxPinEsp 4
+#define txPinESp 2
+
+#define echoUltraSoundPinSensor 1
+#define trigUltraSoundPinSensor 0
+
 #define sensor_left 7
 #define sensor_middle 8
 #define sensor_right 5
 
-SoftwareSerial SerialEsp =  SoftwareSerial(rxPin, txPin);
+SoftwareSerial SerialEsp = SoftwareSerial(rxPinEsp, txPinESp);
 
-LiquidCrystal lcd(14, 15, 16, 17, 18, 19);  
+
 
 unsigned long esp_read_interval = 1000;
 unsigned long time_for_action = 0;
@@ -41,7 +54,10 @@ short room = 0;
 short prev_predict = 0;
 
 int s_sent = 0;
-short counter = 0; 
+short counter = 0;
+
+long duration; 
+long distance;
 
 void motor_control_IO_config(){
   pinMode(IN_1, OUTPUT);
@@ -187,17 +203,34 @@ void get_room(){
   }
     
   Serial.println("daná miestnost:");
-  lcd.setCursor(0, 1);
-  lcd.print(room);
+  
+  display.clearDisplay();
+  display.setCursor(0,0);
+  display.setTextSize(2);           
+  display.setTextColor(SSD1306_WHITE);
+  display.println(("ROOM:"));
+  display.println(room);
+  display.display();
+  
   Serial.println(room);
   Serial.println("------------------");
   prev_predict = output;
 }
   
 void setup(){ 
-  pinMode(rxPin, INPUT);
-  pinMode(txPin, OUTPUT);
-    
+  display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
+  display.clearDisplay();
+  display.display();
+  display.setTextSize(2);             // Normal 1:1 pixel scale
+  display.setTextColor(SSD1306_WHITE);        // Draw white text
+  display.setCursor(0,0);             // Start at top-left corner
+  display.println(F("ROOM:"));
+  display.display();
+  
+  pinMode(rxPinEsp, INPUT);
+  pinMode(txPinESp, OUTPUT);
+
+
   Serial.begin(9600); 
   SerialEsp.begin(115200);
     
@@ -208,9 +241,6 @@ void setup(){
   pinMode(A4, OUTPUT);
   pinMode(A5, OUTPUT);
     
-  lcd.begin(8, 2);
-  lcd.print("room:");
-  
   motor_control_IO_config();
   sensor_IO_config();
 }
@@ -295,7 +325,7 @@ void loop(){
     }
     read_room();
   }
-    if (mode_maunal == 0){
+    if (mode_maunal == 5){
       read_room(); 
       tracking_scan();
       
@@ -323,5 +353,17 @@ void loop(){
           stop();
          }
       }
-   }  
+   }
+   pinMode(trigUltraSoundPinSensor, OUTPUT);
+   pinMode(echoUltraSoundPinSensor, INPUT);
+   digitalWrite(trigUltraSoundPinSensor, LOW);
+   delayMicroseconds(5);
+   digitalWrite(trigUltraSoundPinSensor, HIGH);
+   delayMicroseconds(10);
+   digitalWrite(trigUltraSoundPinSensor, LOW);
+   duration = pulseIn(echoUltraSoundPinSensor, HIGH);
+   distance = (duration/2)/29.1;
+   Serial.print("Distance: ");
+   Serial.print(distance);
+   Serial.println(" cm");
 }
