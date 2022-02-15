@@ -72,6 +72,10 @@ void stop(){
   car_mode = 0;
 }
 
+void ride(char in_1[],char in_2[], char in_3[], char in_4[], int en_A, int en_B ){
+  
+  }
+
 void forward(){
   digitalWrite(IN_1, LOW);
   digitalWrite(IN_2, HIGH);
@@ -219,17 +223,17 @@ void setup(){
   display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
   display.clearDisplay();
   display.display();
-  display.setTextSize(2);             // Normal 1:1 pixel scale
-  display.setTextColor(SSD1306_WHITE);        // Draw white text
-  display.setCursor(0,0);             // Start at top-left corner
+  display.setTextSize(2);            
+  display.setTextColor(SSD1306_WHITE);       
+  display.setCursor(0,0);             
   display.println(F("ROOM:"));
   display.display();
   
   pinMode(rxPinEsp, INPUT);
   pinMode(txPinESp, OUTPUT);
   
-  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
-  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+  pinMode(trigPin, OUTPUT); 
+  pinMode(echoPin, INPUT); 
   
   Serial.begin(9600); 
   SerialEsp.begin(115200);
@@ -347,23 +351,22 @@ void loop(){
          }
       }
    }
+   do{
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
-  // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
-  // Reads the echoPin, returns the sound wave travel time in microseconds
   duration = pulseIn(echoPin, HIGH);
-  // Calculating the distance
-  distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
-  // Displays the distance on the Serial Monitor
+  distance = duration * 0.034 / 2; 
   Serial.print("Distance: ");
   Serial.print(distance);
-  Serial.println(" cm");
-
-  if(distance < 15){
-    stop();
-   }
+  Serial.println("cm");
+  if(distance < 10){
+    stop;
+    }
+  }
+  while(distance <10);
+  
   
 }
