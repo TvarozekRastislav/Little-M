@@ -3,7 +3,7 @@
 //------------set-up---------------
 char wifi_ap_1[] = "rododendron";
 char wifi_ap_2[] = "TP-LINK_9FE2A0";
-char wifi_ap_3[] = "Lidcombe";
+char wifi_ap_3[] = "Router_3";
 //---------------------------------
 
 int numNetworks;

@@ -9,48 +9,37 @@ namespace Eloquent {
                     * Predict class for features vector
                     */
                     int predict(float *x) {
-                        float kernels[16] = { 0 };
+                        float kernels[10] = { 0 };
                         float decisions[3] = { 0 };
                         int votes[3] = { 0 };
-                        kernels[0] = compute_kernel(x,   -61.0  , -55.0  , -88.0 );
-                        kernels[1] = compute_kernel(x,   -54.0  , -30.0  , -75.0 );
-                        kernels[2] = compute_kernel(x,   -60.0  , -16.0  , -75.0 );
-                        kernels[3] = compute_kernel(x,   -56.0  , -31.0  , -70.0 );
-                        kernels[4] = compute_kernel(x,   -77.0  , -18.0  , -74.0 );
-                        kernels[5] = compute_kernel(x,   -58.0  , -41.0  , -72.0 );
-                        kernels[6] = compute_kernel(x,   -75.0  , -19.0  , -74.0 );
-                        kernels[7] = compute_kernel(x,   -64.0  , -38.0  , -71.0 );
-                        kernels[8] = compute_kernel(x,   -68.0  , -28.0  , -69.0 );
-                        kernels[9] = compute_kernel(x,   -68.0  , -23.0  , -64.0 );
-                        kernels[10] = compute_kernel(x,   -67.0  , -46.0  , -66.0 );
-                        kernels[11] = compute_kernel(x,   -66.0  , -44.0  , -66.0 );
-                        kernels[12] = compute_kernel(x,   -64.0  , -47.0  , -62.0 );
-                        kernels[13] = compute_kernel(x,   -77.0  , -22.0  , -67.0 );
-                        kernels[14] = compute_kernel(x,   -67.0  , -37.0  , -67.0 );
-                        kernels[15] = compute_kernel(x,   -68.0  , -28.0  , -73.0 );
-                        decisions[0] = -2.914306173706
-                        + kernels[1] * 0.087594890594
-                        + kernels[2] * -0.022673268808
-                        + kernels[3] * -0.040461017935
-                        + kernels[5] * -0.024460603851
+                        kernels[0] = compute_kernel(x,   -52.0  , -37.0  , -30.0 );
+                        kernels[1] = compute_kernel(x,   -55.0  , -57.0  , -35.0 );
+                        kernels[2] = compute_kernel(x,   -63.0  , -59.0  , -28.0 );
+                        kernels[3] = compute_kernel(x,   -70.0  , -44.0  , -52.0 );
+                        kernels[4] = compute_kernel(x,   -64.0  , -52.0  , -30.0 );
+                        kernels[5] = compute_kernel(x,   -51.0  , -55.0  , -32.0 );
+                        kernels[6] = compute_kernel(x,   -63.0  , -65.0  , -31.0 );
+                        kernels[7] = compute_kernel(x,   -56.0  , -61.0  , -31.0 );
+                        kernels[8] = compute_kernel(x,   -67.0  , -64.0  , -34.0 );
+                        kernels[9] = compute_kernel(x,   -52.0  , -72.0  , -40.0 );
+                        decisions[0] = -10.346027391553
+                        + kernels[0] * 0.351892240823
+                        + kernels[1] * 0.939217767376
+                        + kernels[2]
+                        - kernels[4]
+                        - kernels[5]
+                        + kernels[6] * -0.227120931645
+                        + kernels[7] * -0.063989076554
                         ;
-                        decisions[1] = 3.545248120479
-                        + kernels[0] * 0.001073631696
-                        + kernels[1] * 0.009623424084
-                        + kernels[12] * -0.002202967485
-                        + kernels[15] * -0.008494088295
+                        decisions[1] = 21.899877797428
+                        + kernels[2] * 0.026872988726
+                        + kernels[3] * 0.003461006595
+                        + kernels[8] * -0.03033399532
                         ;
-                        decisions[2] = 13.672855815228
-                        + kernels[4]
-                        + kernels[6] * 9.3279572e-05
-                        + kernels[7] * 0.193538892715
-                        + kernels[8] * 0.456880140572
-                        + kernels[9] * 0.602845139663
-                        + kernels[10]
-                        + kernels[11] * -0.253357452522
-                        - kernels[13]
-                        - kernels[14]
-                        - kernels[15]
+                        decisions[2] = 27.565913998728
+                        + kernels[6] * 0.109222108608
+                        + kernels[8] * -0.092418707283
+                        + kernels[9] * -0.016803401324
                         ;
                         votes[decisions[0] > 0 ? 0 : 1] += 1;
                         votes[decisions[1] > 0 ? 0 : 2] += 1;

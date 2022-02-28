@@ -11,19 +11,21 @@ Eloquent::ML::Port::SVM SVM_classifier;
 #define SCREEN_ADDRESS 0x3C
 #define SCREEN_WIDTH 128 
 #define SCREEN_HEIGHT 32
+
 //ESP comunication
 #define rxPinEsp 4
 #define txPinESp 2
 //line sensors
+
 #define sensor_left 7
 #define sensor_middle 8
 #define sensor_right 5
 //ultrasound sensor
+
 #define trigPin A1
 #define echoPin A0
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-
 
 //comunication with ESP
 SoftwareSerial SerialEsp = SoftwareSerial(rxPinEsp, txPinESp);
@@ -41,14 +43,16 @@ const int EN_A = 3;
 const int EN_B = 6;
 
 //beginning mode, default speed and bluetooth variable
-int mode_maunal = 1;
+int mode_maunal = 0;
 char Incoming_value = 0;
 int speed = 60;
 
-//line following sensors
+//room deciding
 int first_signal = 0;
 int second_signal = 0; 
 int third_signal = 0;
+
+//line following sensors
 unsigned char state_left;
 unsigned char state_middle;
 unsigned char state_right;
@@ -82,7 +86,6 @@ void stop(){
 }
 
 void ride(uint8_t in_1,uint8_t in_2, uint8_t in_3, uint8_t in_4, int en_A, int en_B ){
-  Serial.print(in_1);
 
   digitalWrite(IN_1, in_1);
   digitalWrite(IN_2, in_2);
