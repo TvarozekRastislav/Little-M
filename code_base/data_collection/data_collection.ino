@@ -5,7 +5,7 @@ short num_of_rooms = 3;
 short num_of_records = 30;
 char wifi_ap_1[] = "rododendron";
 char wifi_ap_2[] = "TP-LINK_9FE2A0";
-char wifi_ap_3[] = "Lidcombe";
+char wifi_ap_3[] = "Router_3";
 char delimeter[] = "|";
 //---------------------------------
 

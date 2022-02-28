@@ -1,47 +1,75 @@
+#include <Adafruit_SSD1306.h>
 #include <SoftwareSerial.h>
-#include <LiquidCrystal.h>
+#include <Wire.h>
 #include "model.h"
 
+//module.c
 Eloquent::ML::Port::SVM SVM_classifier;
 
-#define rxPin 4
-#define txPin 2
+//display
+#define OLED_RESET -1 
+#define SCREEN_ADDRESS 0x3C
+#define SCREEN_WIDTH 128 
+#define SCREEN_HEIGHT 32
+
+//ESP comunication
+#define rxPinEsp 4
+#define txPinESp 2
+//line sensors
+
 #define sensor_left 7
 #define sensor_middle 8
 #define sensor_right 5
+//ultrasound sensor
 
-SoftwareSerial SerialEsp =  SoftwareSerial(rxPin, txPin);
+#define trigPin A1
+#define echoPin A0
 
-LiquidCrystal lcd(14, 15, 16, 17, 18, 19);  
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
+//comunication with ESP
+SoftwareSerial SerialEsp = SoftwareSerial(rxPinEsp, txPinESp);
+
+//waiting for response multitasking
 unsigned long esp_read_interval = 1000;
 unsigned long time_for_action = 0;
 
-unsigned char state_left;
-unsigned char state_middle;
-unsigned char state_right;
-
+//motor pins
 const int IN_1 = 10;
 const int IN_2 = 11;
 const int IN_3 = 12;
 const int IN_4 = 13;
 const int EN_A = 3;
 const int EN_B = 6;
-int car_mode = 0;
 
+//beginning mode, default speed and bluetooth variable
 int mode_maunal = 0;
 char Incoming_value = 0;
 int speed = 60;
 
+//room deciding
 int first_signal = 0;
 int second_signal = 0; 
 int third_signal = 0;
 
+//line following sensors
+unsigned char state_left;
+unsigned char state_middle;
+unsigned char state_right;
+
+
+//room decision
 short room = 0;
 short prev_predict = 0;
 
+//sending and recieving from ESP
 int s_sent = 0;
-short counter = 0; 
+short counter = 0;
+
+//front sensor
+long duration; 
+long distance;
+
 
 void motor_control_IO_config(){
   pinMode(IN_1, OUTPUT);
@@ -55,59 +83,18 @@ void motor_control_IO_config(){
 void stop(){
   analogWrite(EN_A, 0);
   analogWrite(EN_B, 0);
-  car_mode = 0;
 }
 
-void forward(){
-  digitalWrite(IN_1, LOW);
-  digitalWrite(IN_2, HIGH);
+void ride(uint8_t in_1,uint8_t in_2, uint8_t in_3, uint8_t in_4, int en_A, int en_B ){
 
-  digitalWrite(IN_3, HIGH);
-  digitalWrite(IN_4, LOW);
+  digitalWrite(IN_1, in_1);
+  digitalWrite(IN_2, in_2);
 
-  analogWrite(EN_A, speed);
-  analogWrite(EN_B, speed + 10);
+  digitalWrite(IN_3, in_3);
+  digitalWrite(IN_4, in_4);
 
-  car_mode = 1;
-}
-
-void right(){
-  digitalWrite(IN_1, LOW);
-  digitalWrite(IN_2, HIGH);
-
-  digitalWrite(IN_3, HIGH);
-  digitalWrite(IN_4, LOW);
-
-  analogWrite(EN_A, 0);
-  analogWrite(EN_B, 120);
-
-  car_mode = 2;
-}
-
-void back(){
-  digitalWrite(IN_1, HIGH);
-  digitalWrite(IN_2, LOW);
-
-  digitalWrite(IN_3, LOW);
-  digitalWrite(IN_4, HIGH);
-
-  analogWrite(EN_A, speed);
-  analogWrite(EN_B, speed + 10);
-  
-  car_mode = 3;
-}
-
-void left(){
-  digitalWrite(IN_1, LOW);
-  digitalWrite(IN_2, HIGH);
-
-  digitalWrite(IN_3, HIGH);
-  digitalWrite(IN_4, LOW);
-
-  analogWrite(EN_A, 100);
-  analogWrite(EN_B, 0);
-
-  car_mode = 4;
+  analogWrite(EN_A, en_A);
+  analogWrite(EN_B, en_B );
 }
 
 void sensor_IO_config(){
@@ -187,39 +174,63 @@ void get_room(){
   }
     
   Serial.println("daná miestnost:");
-  lcd.setCursor(0, 1);
-  lcd.print(room);
+  
+  display.clearDisplay();
+  display.setCursor(0,0);
+  display.setTextSize(2);           
+  display.setTextColor(SSD1306_WHITE);
+  display.println(("ROOM:"));
+  display.println(room);
+  display.display();
+  
   Serial.println(room);
   Serial.println("------------------");
   prev_predict = output;
-}
-  
-void setup(){ 
-  pinMode(rxPin, INPUT);
-  pinMode(txPin, OUTPUT);
-    
-  Serial.begin(9600); 
-  SerialEsp.begin(115200);
-    
-  pinMode(A0, OUTPUT);
-  pinMode(A1, OUTPUT);
-  pinMode(A2, OUTPUT);
-  pinMode(A3, OUTPUT);
-  pinMode(A4, OUTPUT);
-  pinMode(A5, OUTPUT);
-    
-  lcd.begin(8, 2);
-  lcd.print("room:");
-  
-  motor_control_IO_config();
-  sensor_IO_config();
 }
 
 void tracking_scan(){
   state_left = digitalRead(sensor_left);
   state_middle = digitalRead(sensor_middle);
   state_right = digitalRead(sensor_right);
+}  
+
+void calcDistance(){
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH);
+  distance = duration * 0.034 / 2; 
+  }
+  
+void setup(){ 
+  //display setup
+  display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
+  display.clearDisplay();
+  display.display();
+  display.setTextSize(2);            
+  display.setTextColor(SSD1306_WHITE);       
+  display.setCursor(0,0);             
+  display.println(F("ROOM:"));
+  display.display();
+  
+  //com with ESP
+  pinMode(rxPinEsp, INPUT);
+  pinMode(txPinESp, OUTPUT);
+  //sensor setup
+  pinMode(trigPin, OUTPUT); 
+  pinMode(echoPin, INPUT); 
+  //com setup
+  Serial.begin(9600); 
+  SerialEsp.begin(115200);
+  //motor setup
+  motor_control_IO_config();
+  //line sensors setup
+  sensor_IO_config();
 }
+
+
 
 void loop(){
   
@@ -234,94 +245,63 @@ void loop(){
     else if (Incoming_value == 'C'){
       mode_maunal = 0;
     }
-  
-  if (mode_maunal == 1){
-    if (Incoming_value == '1'){
-      forward();
-    }
-    else if (Incoming_value == '2'){
-      right();
-    }
-    else if (Incoming_value == '3'){
-      back();
-    }
-    else if (Incoming_value == '4'){
-      left();
-    }
-    else if (Incoming_value == '5'){
-      digitalWrite(IN_1, LOW);
-      digitalWrite(IN_2, HIGH);
-
-      digitalWrite(IN_3, HIGH);
-      digitalWrite(IN_4, LOW);
-
-      analogWrite(EN_A, 40);
-      analogWrite(EN_B, 100);
-    }
-    else if (Incoming_value == '6'){//doprava_dole
-
-      digitalWrite(IN_1, HIGH);
-      digitalWrite(IN_2, LOW);
-
-      digitalWrite(IN_3, LOW);
-      digitalWrite(IN_4, HIGH);
-
-      analogWrite(EN_A, 40);
-      analogWrite(EN_B, 100);
-    }
-    else if (Incoming_value == '7'){//dolava_dole
-      digitalWrite(IN_1, HIGH);
-      digitalWrite(IN_2, LOW);
-
-      digitalWrite(IN_3, LOW);
-      digitalWrite(IN_4, HIGH);
-
-      analogWrite(EN_A, 100);
-      analogWrite(EN_B, 50);
-    }
-    else if (Incoming_value == '8'){ //dolava hore
-      digitalWrite(IN_1, LOW);
-      digitalWrite(IN_2, HIGH);
-
-      digitalWrite(IN_3, HIGH);
-      digitalWrite(IN_4, LOW);
-
-      analogWrite(EN_A, 100);
-      analogWrite(EN_B, 50);
+    
+    if (mode_maunal == 1){
+      if (Incoming_value == '1'){
+        Serial.print("idzeeeeeeem j ");
+        ride(LOW, HIGH, HIGH, LOW ,speed, speed+10); //forward
+      }
+      else if (Incoming_value == '2'){
+        ride(LOW, HIGH, HIGH, LOW ,0, 120); //right
+      }
+      else if (Incoming_value == '3'){
+        ride(HIGH, LOW, LOW, HIGH ,speed, speed+10); //back 
+      }
+      else if (Incoming_value == '4'){
+        ride(LOW, HIGH, HIGH, LOW ,100, 0); //left    
       }
       else{
+      stop();
+      }
+    }
+  read_room();
+  }
+  
+  if (mode_maunal == 0){
+    read_room(); 
+    tracking_scan();
+      
+    if (state_middle == HIGH){
+      if (state_left == LOW & state_right == HIGH){
+        ride(LOW, HIGH, HIGH, LOW ,0, 120); //right
+      }
+      else if (state_right == LOW & state_left == HIGH){
+        ride(LOW, HIGH, HIGH, LOW ,100, 0); //left    
+      }
+      else{
+        ride(LOW, HIGH, HIGH, LOW ,speed, speed+10); //forward
+      }
+    }
+    else{
+      if (state_left == LOW & state_right == HIGH){
+        ride(LOW, HIGH, HIGH, LOW ,0, 120); //right
+      }
+      else if (state_right == LOW & state_left == HIGH){
+        ride(LOW, HIGH, HIGH, LOW ,100, 0); //left 
+      }
+      else{
+        ride(HIGH, LOW, LOW, HIGH ,speed, speed+10); //back 
+        delay(100);
         stop();
       }
     }
-    read_room();
   }
-    if (mode_maunal == 0){
-      read_room(); 
-      tracking_scan();
-      
-      if (state_middle == HIGH){
-        if (state_left == LOW & state_right == HIGH){
-          right();
-      }
-        else if (state_right == LOW & state_left == HIGH){
-          left();
-        }
-        else{
-          forward();
-        }
-      }
-      else{
-        if (state_left == LOW & state_right == HIGH){
-          right();
-        }
-        else if (state_right == LOW & state_left == HIGH){
-           left();
-        }
-        else{
-          back();
-          delay(100);
-          stop();
-         }
-      }
-   }  
+  
+  do{
+    calcDistance();
+  if(distance < 10){
+    stop();
+    }
+  }
+  while(distance <10);
 }

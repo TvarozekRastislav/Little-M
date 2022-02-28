@@ -12,7 +12,7 @@ Ultrazvukový senzor HC-SRO4
 ESP8266 ESP-01
 servo
 2*4.5V batéria
-LCD 8*2 Display
+OLED 0.96″ display 128×64
 IIC Senzorový shield V5.0
 bluetooth modul HC-05
 batériový box
