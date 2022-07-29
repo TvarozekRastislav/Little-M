@@ -3,6 +3,8 @@
     <img src="presentation/little_m_logo_no_bg.png"/>
 
 Bechelors project of student at FEI STU Bratislava.<br> It is a prototype of little autonomous vehicle desinged to be able to orientate inside a building.<br>
+Example video 1. - https://youtu.be/EsY_k1E6DLk<br>
+Example video 2. - https://youtu.be/gij7saN3cls<br>
 Bakalársky projekt študenta na FEI STU Bratislava.<br> Jedná sa o návrh malého autonómneho robotického vozdila s orientáciou v interieri.<br> Scrollni dole pre slovenský jazyk
 </div>
 
